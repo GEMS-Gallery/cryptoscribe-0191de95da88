@@ -11,10 +11,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     const modal = document.getElementById('newPostModal');
     const closeModal = document.getElementById('closeModal');
     const submitPost = document.getElementById('submitPost');
+    const toggleTheme = document.getElementById('toggleTheme');
 
-    newPostBtn.addEventListener('click', () => modal.style.display = 'block');
-    closeModal.addEventListener('click', () => modal.style.display = 'none');
+    newPostBtn.addEventListener('click', () => {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    });
+    closeModal.addEventListener('click', () => {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    });
     submitPost.addEventListener('click', createPost);
+    toggleTheme.addEventListener('click', toggleDarkMode);
 
     await loadPosts();
 });
@@ -65,6 +73,7 @@ async function createPost() {
     try {
         await backend.createPost(title, body, author);
         document.getElementById('newPostModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
         titleInput.value = '';
         authorInput.value = '';
         quill.setContents([]);
@@ -76,4 +85,8 @@ async function createPost() {
         submitBtn.disabled = false;
         submitBtn.innerHTML = 'Submit';
     }
+}
+
+function toggleDarkMode() {
+    document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
 }

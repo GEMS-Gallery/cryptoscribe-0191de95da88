@@ -7,21 +7,25 @@
     <link rel="stylesheet" href="src/index.css">
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
         <h1>Crypto Blog</h1>
-        <button id="newPostBtn">New Post</button>
+        <button id="newPostBtn" class="btn-primary">New Post</button>
+        <button id="toggleTheme" class="btn-secondary">Toggle Theme</button>
     </header>
     <main id="posts"></main>
     <div id="newPostModal" class="modal">
         <div class="modal-content">
             <h2>Create New Post</h2>
-            <input type="text" id="postTitle" placeholder="Title">
-            <input type="text" id="postAuthor" placeholder="Author">
+            <input type="text" id="postTitle" placeholder="Title" class="input-field">
+            <input type="text" id="postAuthor" placeholder="Author" class="input-field">
             <div id="editor"></div>
-            <button id="submitPost">Submit</button>
-            <button id="closeModal">Close</button>
+            <div class="button-group">
+                <button id="submitPost" class="btn-primary">Submit</button>
+                <button id="closeModal" class="btn-secondary">Close</button>
+            </div>
         </div>
     </div>
     <script type="module" src="src/app.js"></script>
