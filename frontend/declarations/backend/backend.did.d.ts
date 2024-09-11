@@ -12,6 +12,7 @@ export interface Post {
 export type Time = bigint;
 export interface _SERVICE {
   'createPost' : ActorMethod<[string, string, string], undefined>,
+  'getPost' : ActorMethod<[bigint], [] | [Post]>,
   'getPosts' : ActorMethod<[], Array<Post>>,
 }
 export declare const idlFactory: IDL.InterfaceFactory;

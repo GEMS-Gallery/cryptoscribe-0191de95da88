@@ -1,3 +1,4 @@
+import Bool "mo:base/Bool";
 import Nat "mo:base/Nat";
 
 import Array "mo:base/Array";
@@ -25,6 +26,11 @@ actor {
   // Query to get all posts
   public query func getPosts() : async [Post] {
     List.toArray(posts)
+  };
+
+  // Query to get a single post by ID
+  public query func getPost(id: Nat) : async ?Post {
+    List.find(posts, func (p: Post) : Bool { p.id == id })
   };
 
   // Update call to create a new post

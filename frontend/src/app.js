@@ -24,16 +24,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     submitPost.addEventListener('click', createPost);
     toggleTheme.addEventListener('click', toggleDarkMode);
 
-    await loadPosts();
+    window.addEventListener('popstate', handleNavigation);
+
+    await handleNavigation();
 });
 
+async function handleNavigation() {
+    const path = window.location.pathname;
+    const app = document.getElementById('app');
+
+    if (path === '/' || path === '/index.html') {
+        await loadPosts();
+    } else if (path.startsWith('/post/')) {
+        const postId = parseInt(path.split('/')[2]);
+        await loadSinglePost(postId);
+    }
+}
+
 async function loadPosts() {
-    const postsContainer = document.getElementById('posts');
-    postsContainer.innerHTML = '<div class="spinner"></div>';
+    const app = document.getElementById('app');
+    app.innerHTML = '<div class="spinner"></div>';
 
     try {
         const posts = await backend.getPosts();
-        postsContainer.innerHTML = '';
+        app.innerHTML = '';
 
         posts.sort((a, b) => Number(b.timestamp) - Number(a.timestamp));
 
@@ -41,15 +55,39 @@ async function loadPosts() {
             const postElement = document.createElement('div');
             postElement.className = 'post';
             postElement.innerHTML = `
-                <h2>${post.title}</h2>
+                <h2 onclick="navigateToPost(${post.id})">${post.title}</h2>
                 <div class="post-meta">By ${post.author} on ${new Date(Number(post.timestamp) / 1000000).toLocaleString()}</div>
-                <div>${post.body}</div>
+                <div>${post.body.substring(0, 200)}...</div>
             `;
-            postsContainer.appendChild(postElement);
+            app.appendChild(postElement);
         });
     } catch (error) {
         console.error('Error loading posts:', error);
-        postsContainer.innerHTML = '<p>Error loading posts. Please try again later.</p>';
+        app.innerHTML = '<p>Error loading posts. Please try again later.</p>';
+    }
+}
+
+async function loadSinglePost(postId) {
+    const app = document.getElementById('app');
+    app.innerHTML = '<div class="spinner"></div>';
+
+    try {
+        const post = await backend.getPost(postId);
+        if (post) {
+            app.innerHTML = `
+                <button class="btn-secondary back-button" onclick="history.back()">Back to Home</button>
+                <div class="post">
+                    <h2>${post.title}</h2>
+                    <div class="post-meta">By ${post.author} on ${new Date(Number(post.timestamp) / 1000000).toLocaleString()}</div>
+                    <div>${post.body}</div>
+                </div>
+            `;
+        } else {
+            app.innerHTML = '<p>Post not found.</p>';
+        }
+    } catch (error) {
+        console.error('Error loading post:', error);
+        app.innerHTML = '<p>Error loading post. Please try again later.</p>';
     }
 }
 
@@ -90,3 +128,8 @@ async function createPost() {
 function toggleDarkMode() {
     document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
 }
+
+window.navigateToPost = function(postId) {
+    history.pushState(null, '', `/post/${postId}`);
+    loadSinglePost(postId);
+};

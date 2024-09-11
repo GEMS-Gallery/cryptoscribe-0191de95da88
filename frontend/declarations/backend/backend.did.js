@@ -9,6 +9,7 @@ export const idlFactory = ({ IDL }) => {
   });
   return IDL.Service({
     'createPost' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [], []),
+    'getPost' : IDL.Func([IDL.Nat], [IDL.Opt(Post)], ['query']),
     'getPosts' : IDL.Func([], [IDL.Vec(Post)], ['query']),
   });
 };
