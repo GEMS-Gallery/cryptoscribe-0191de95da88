@@ -73,13 +73,14 @@ async function loadSinglePost(postId) {
 
     try {
         const post = await backend.getPost(postId);
-        if (post) {
+        if (post && post.length > 0) {
+            const postData = post[0];
             app.innerHTML = `
                 <button class="btn-secondary back-button" onclick="history.back()">Back to Home</button>
                 <div class="post">
-                    <h2>${post.title}</h2>
-                    <div class="post-meta">By ${post.author} on ${new Date(Number(post.timestamp) / 1000000).toLocaleString()}</div>
-                    <div>${post.body}</div>
+                    <h2>${postData.title}</h2>
+                    <div class="post-meta">By ${postData.author} on ${new Date(Number(postData.timestamp) / 1000000).toLocaleString()}</div>
+                    <div>${postData.body}</div>
                 </div>
             `;
         } else {
